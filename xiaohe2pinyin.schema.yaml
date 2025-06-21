@@ -1,0 +1,20 @@
+schema:
+  schema_id: "xiaohe2pinyin"
+  name: "汉语拼音字母（小鹤双拼）"
+  version: "1.0"
+
+engine:
+  processors:
+    - speller
+    - navigator
+    - express_editor
+  segmentors:
+    - fallback_segmentor
+  translators:
+    - lua_translator@Xiaohe2pinyin_translator
+
+speller:
+  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345"
+  max_code_length: 3
+  auto_select: true
+  auto_select_pattern: "^...$"
