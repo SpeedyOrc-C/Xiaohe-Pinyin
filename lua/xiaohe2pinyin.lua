@@ -26,6 +26,7 @@ local function proper_upper(c)
     c = string.gsub(c, "ú", "Ú")
     c = string.gsub(c, "ǔ", "Ǔ")
     c = string.gsub(c, "ù", "Ù")
+    c = string.gsub(c, "ü", "Ü")
     c = string.gsub(c, "ǖ", "Ǖ")
     c = string.gsub(c, "ǘ", "Ǘ")
     c = string.gsub(c, "ǚ", "Ǚ")
@@ -249,24 +250,104 @@ local function expand_final(raw_i, raw_f)
     return simple_final_mapping[raw_f]
 end
 
+---@param input string
+---@return string | nil
+local function translate_single_letter(input)
+    local len = string.len(input)
+
+    if len < 1 or 2 < len then
+        return nil
+    end
+
+    local c1 = string.sub(input, 1, 1)
+
+    local tone
+
+    if len == 2 then
+        local c2 = string.sub(input, 2, 2)
+        if c2 == "1" then tone = 1
+        elseif c2 == "2" then tone = 2
+        elseif c2 == "3" then tone = 3
+        elseif c2 == "4" then tone = 4
+        elseif c2 == "5" then tone = 5
+        else return nil
+        end
+    else
+        tone = 5
+    end
+
+    local is_upper = string.match(c1, "%u")
+
+    c1 = string.lower(c1)
+
+    local function change_case_add_tone_to_final(s)
+        if is_upper then
+            return proper_upper(add_tone_to_final(s, tone))
+        else
+            return add_tone_to_final(s, tone)
+        end
+    end
+
+    if c1 == "a" then
+        return change_case_add_tone_to_final("a")
+    elseif c1 == "e" then
+        return change_case_add_tone_to_final("e")
+    elseif c1 == "i" then
+        return change_case_add_tone_to_final("i")
+    elseif c1 == "o" then
+        return change_case_add_tone_to_final("o")
+    elseif c1 == "u" then
+        return change_case_add_tone_to_final("u")
+    elseif c1 == "v" then
+        return change_case_add_tone_to_final("ü")
+    elseif c1 == "w" and (tone ~= 1 or tone ~= 3) then
+        return change_case_add_tone_to_final("ê")
+    else
+        return nil
+    end
+end
 
 ---@param input string
 ---@return string | nil
 local function xiaohe2pinyin(input)
+    local single_letter_result = translate_single_letter(input)
+
+    if single_letter_result ~= nil then
+        return single_letter_result
+    end
+
     local tone
 
-    if string.len(input) < 2 then return nil end
-    if string.len(input) > 3 then return nil end
+    local len = string.len(input)
 
-    if string.len(input) == 3 then
-        local raw_tone = string.sub(input, 3, 3)
+    if len < 2 then return nil end
+    if len > 4 then return nil end
 
-        if raw_tone == "1" then tone = 1
-        elseif raw_tone == "2" then tone = 2
-        elseif raw_tone == "3" then tone = 3
-        elseif raw_tone == "4" then tone = 4
-        elseif raw_tone == "5" then tone = 5
-        else return nil end
+    local rhotic = false
+
+    if len >= 3 then
+        local c3 = string.sub(input, 3, 3)
+        if c3 == "R" or c3 == "r" then
+            rhotic = true
+            if len >= 4 then
+                local c4 = string.sub(input, 4, 4)
+                if c4 == "1" then tone = 1
+                elseif c4 == "2" then tone = 2
+                elseif c4 == "3" then tone = 3
+                elseif c4 == "4" then tone = 4
+                elseif c4 == "5" then tone = 5
+                else return nil
+                end
+            else
+                tone = 5
+            end
+        elseif c3 == "1" then tone = 1
+        elseif c3 == "2" then tone = 2
+        elseif c3 == "3" then tone = 3
+        elseif c3 == "4" then tone = 4
+        elseif c3 == "5" then tone = 5
+        else return nil
+        end
     else
         tone = 5
     end
@@ -298,9 +379,7 @@ local function xiaohe2pinyin(input)
         return change_case(add_tone_to_final(s, tone))
     end
 
-    if raw_syllable == "aa" then
-        return change_case_add_tone_to_final("a")
-    elseif raw_syllable == "ah" then
+    if raw_syllable == "ah" then
         return change_case_add_tone_to_final("ang")
     elseif raw_syllable == "an" then
         return change_case_add_tone_to_final("an")
@@ -308,10 +387,8 @@ local function xiaohe2pinyin(input)
         return change_case_add_tone_to_final("ao")
     elseif raw_syllable == "ai" then
         return change_case_add_tone_to_final("ai")
-    elseif raw_syllable == "ee" then
-        return change_case_add_tone_to_final("e")
-    elseif raw_syllable == "oo" then
-        return change_case_add_tone_to_final("o")
+    elseif raw_syllable == "er" then
+        return change_case_add_tone_to_final("er")
     elseif raw_syllable == "ou" then
         return change_case_add_tone_to_final("ou")
     end
@@ -322,7 +399,15 @@ local function xiaohe2pinyin(input)
     local final = expand_final(raw_initial, raw_final)
     if final == nil then return nil end
 
-    return change_case(initial .. add_tone_to_final(final, tone))
+    local lower_result = initial .. add_tone_to_final(final, tone)
+
+    if rhotic then
+        lower_result = lower_result .. "r"
+    end
+
+    local result = change_case(lower_result)
+
+    return result
 end
 
 local function xiaohe2pinyin_translator(input, seg, env)

@@ -1,7 +1,7 @@
 schema:
   schema_id: "xiaohe2pinyin"
   name: "汉语拼音字母（小鹤双拼）"
-  version: "1.0"
+  version: "1.1"
 
 engine:
   processors:
@@ -15,6 +15,6 @@ engine:
 
 speller:
   alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345"
-  max_code_length: 3
+  max_code_length: 4
   auto_select: true
-  auto_select_pattern: "^...$"
+  auto_select_pattern: "^[A-Za-z]([A-Za-z][Rr]?)?[1-5]$"
