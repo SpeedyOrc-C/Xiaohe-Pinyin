@@ -15,6 +15,7 @@ engine:
 
 speller:
   alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345"
+  initials: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   max_code_length: 4
   auto_select: true
   auto_select_pattern: "^[A-Za-z]([A-Za-z][Rr]?)?[1-5]$"
