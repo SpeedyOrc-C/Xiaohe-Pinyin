@@ -94,44 +94,42 @@ local function add_tone_to_final(final, tone)
         return add_tone_to_vowel(vowel, tone)
     end
 
-    local mapping = {
-        ["a"] = f("a"),
-        ["e"] = f("e"),
-        ["i"] = f("i"),
-        ["o"] = f("o"),
-        ["u"] = f("u"),
-        ["ü"] = f("ü"),
-        ["ê"] = f("ê"),
-        ["ai"] = f("a").."i",
-        ["ao"] = f("a").."o",
-        ["an"] = f("a").."n",
-        ["ang"] = f("a").."ng",
-        ["ei"] = f("e").."i",
-        ["en"] = f("e").."n",
-        ["eng"] = f("e").."ng",
-        ["er"] = f("e").."r",
-        ["ia"] = "i"..f("a"),
-        ["iao"] = "i"..f("a").."o",
-        ["ian"] = "i"..f("a").."n",
-        ["iang"] = "i"..f("a").."ng",
-        ["ie"] = "i"..f("e"),
-        ["iong"] = "i"..f("o").."ng",
-        ["iu"] = "i"..f("u"),
-        ["in"] = f("i").."n",
-        ["ing"] = f("i").."ng",
-        ["ou"] = f("o").."u",
-        ["ong"] = f("o").."ng",
-        ["ua"] = "u"..f("a"),
-        ["uai"] = "u"..f("a").."i",
-        ["uan"] = "u"..f("a").."n",
-        ["uang"] = "u"..f("a").."ng",
-        ["ue"] = "u"..f("e"),
-        ["ui"] = "u"..f("i"),
-        ["un"] = f("u").."n",
-        ["uo"] = "u"..f("o"),
-    }
-
-    return mapping[final]
+    if final == "a" then return f("a")
+    elseif final == "e" then return f("e")
+    elseif final == "i" then return f("i")
+    elseif final == "o" then return f("o")
+    elseif final == "u" then return f("u")
+    elseif final == "ü" then return f("ü")
+    elseif final == "ê" then return f("ê")
+    elseif final == "ai" then return f("a").."i"
+    elseif final == "ao" then return f("a").."o"
+    elseif final == "an" then return f("a").."n"
+    elseif final == "ang" then return f("a").."ng"
+    elseif final == "ei" then return f("e").."i"
+    elseif final == "en" then return f("e").."n"
+    elseif final == "eng" then return f("e").."ng"
+    elseif final == "er" then return f("e").."r"
+    elseif final == "ia" then return "i"..f("a")
+    elseif final == "iao" then return "i"..f("a").."o"
+    elseif final == "ian" then return "i"..f("a").."n"
+    elseif final == "iang" then return "i"..f("a").."ng"
+    elseif final == "ie" then return "i"..f("e")
+    elseif final == "iong" then return "i"..f("o").."ng"
+    elseif final == "iu" then return "i"..f("u")
+    elseif final == "in" then return f("i").."n"
+    elseif final == "ing" then return f("i").."ng"
+    elseif final == "ou" then return f("o").."u"
+    elseif final == "ong" then return f("o").."ng"
+    elseif final == "ua" then return "u"..f("a")
+    elseif final == "uai" then return "u"..f("a").."i"
+    elseif final == "uan" then return "u"..f("a").."n"
+    elseif final == "uang" then return "u"..f("a").."ng"
+    elseif final == "ue" then return "u"..f("e")
+    elseif final == "ui" then return "u"..f("i")
+    elseif final == "un" then return f("u").."n"
+    elseif final == "uo" then return "u"..f("o")
+    else error("This should not happen.")
+    end
 end
 
 local simple_initial_mapping = {
